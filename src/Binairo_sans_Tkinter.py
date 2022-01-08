@@ -155,7 +155,7 @@ def inversion_ligne_colonne(liste_jeu,liste_erreur):
     for colonne in range(len(liste_jeu)):
         nouvelle_ligne=[]
         for ligne in range(len(liste_jeu)):
-            nouvelle_ligne.append(liste_jeu[len(liste_jeu)-1-ligne][colonne]) #nouvelle_ligne = ligne formée à partir de la colonne de la grille précédente
+            nouvelle_ligne.append(liste_jeu[ligne][colonne]) #nouvelle_ligne = ligne formée à partir de la colonne de la grille précédente
         base.append(nouvelle_ligne)
     liste_jeu=base
     return liste_jeu
@@ -193,15 +193,25 @@ def generer_solution(taille):
 
 # Fonction déterminant le nombre de case à retirer selon la difficulté
 def nombre_de_case_à_retirer(taille, difficulte):
-  if difficulte==1:
-      nombre=int(67/100*taille**2)
+    if taille<=10:
+        if difficulte==1:
+            nombre=int(67/100*taille**2)
 
-  elif difficulte==2:
-      nombre=int((71/100)*taille**2)
+        elif difficulte==2:
+            nombre=int((75/100)*taille**2)
 
-  elif difficulte==3:
-      nombre=int((75/100)*taille**2)
-  return nombre
+        elif difficulte==3:
+            nombre=int((80/100)*taille**2)-1
+    else:
+        if difficulte==1:
+            nombre=int(75/100*taille**2)
+
+        elif difficulte==2:
+            nombre=int((78/100)*taille**2)
+
+        elif difficulte==3:
+            nombre=int((83/100)*taille**2)-1
+    return nombre
 
 
 # Fonction permettant de copier une liste avec des liste à l'interieurs sans les liés

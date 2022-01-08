@@ -48,43 +48,47 @@ def afficher_grille(grille):
     btn_reinitialiser = Button(global_frame, text = 'Réinitialiser', font = ('Helvetica', 12), bg ='blue', fg = 'white', overrelief = SUNKEN, command= lambda : reinitialisation())
     btn_reinitialiser.grid(row = len(grille)+1, column = 0, columnspan = (len(grille))//2, sticky = W, pady = 10)
     # Création d'un bouton de vérification
-    btn_verification = Button(global_frame, text = ' Vérifier ', font = ('Helvetica', 12), bg ='blue', fg = 'white', overrelief = SUNKEN, command= lambda : verification_tkinter(grille,solution))
+    btn_verification = Button(global_frame, text = ' Vérifier ', font = ('Helvetica', 12), bg ='blue', fg = 'white', overrelief = SUNKEN, command= lambda : verification_tkinter())
     btn_verification.grid(row = len(grille)+1, column = len(grille)//2, columnspan = (len(grille))//2, sticky = E, pady = 10)
     # ------------------------
 
 # Fonction qui change les valeurs quand on clique dessus
 def changer_valeur(bouton):
-    global grille_depart,grille
-    numero=""
-    for i in range(14,str(bouton).index(".",14)):
-        numero+=str(bouton)[i]
-    if numero=="":
-        numero=1
-    numero=int(numero)-int((int(numero)-1)/len(grille)**2)*len(grille)**2-1
-    ligne=int((numero/len(grille)))
-    colonne=numero-ligne*len(grille)
-    if grille_depart[ligne][colonne]!=' ':
-        erreur=Toplevel()
-        erreur.resizable(width=False,height=False)
-        erreur.title("erreur du choix de la case")
-        erreur_label=Label(erreur,text=" La case choisie était présente au départ, elle est donc juste ! \n Veuillez choisir une autre case").pack()
-        erreur.after(5000,lambda : erreur.destroy())
-    elif grille[ligne][colonne]==0:       #change un 0 en 1
-        grille[ligne][colonne]=1
-        bouton.config(text=1)
-    elif grille[ligne][colonne]==1:     #change un 1 en "blanc"
-        grille[ligne][colonne]=' '
-        bouton.config(text='')
-    elif grille[ligne][colonne]==' ':    #change un "blanc" en 0
-        grille[ligne][colonne]=0
-        bouton.config(text='0')
+    global grille_depart,grille,decalage,verification
+    if verification:
+        verification_tkinter()
+    else:
+        numero=""
+        for i in range(14,str(bouton).index(".",14)):
+            numero+=str(bouton)[i]
+        if numero=="":
+            numero=1
+        numero=int(numero)-decalage-1
+        ligne=int((numero/len(grille)))
+        colonne=numero-ligne*len(grille)
+        if grille_depart[ligne][colonne]!=' ':
+            erreur=Toplevel()
+            erreur.resizable(width=False,height=False)
+            erreur.title("erreur du choix de la case")
+            erreur_label=Label(erreur,text=" La case choisie était présente au départ, elle est donc juste ! \n Veuillez choisir une autre case").pack()
+            erreur.after(5000,lambda : erreur.destroy())
+        elif grille[ligne][colonne]==0:       #change un 0 en 1
+            grille[ligne][colonne]=1
+            bouton.config(text=1)
+        elif grille[ligne][colonne]==1:     #change un 1 en "blanc"
+            grille[ligne][colonne]=' '
+            bouton.config(text='')
+        elif grille[ligne][colonne]==' ':    #change un "blanc" en 0
+            grille[ligne][colonne]=0
+            bouton.config(text='0')
 
 #------------- Fonctions gérant la demande d'une nouvelle partie --------------------
 
 def nouveau_jeu():
-    global grille,grille_depart,solution
+    global grille,grille_depart,solution,decalage,game_window
     taille_difficulte = demander_taille_difficulte()
     solution = generer_solution(taille_difficulte[0]) # génère une liste solution
+    decalage+=len(grille)**2
     grille = liste_egal_liste_solution(solution) # copie la liste solution dans la liste de jeu sans que les 2 soient liés
     grille = generer_grille_exercice(taille_difficulte[0], grille, nombre_de_case_à_retirer(taille_difficulte[0], taille_difficulte[1])) #crée la grille de jeu
     grille_depart=liste_egal_liste_solution(grille)
@@ -97,7 +101,7 @@ def demander_taille_difficulte():
     taille_difficulte_window=Toplevel()
     taille_difficulte_window.title("Choix de la difficulté")
     taille_difficulte_window.resizable(width=False,height=False)
-    question = Label(taille_difficulte_window,text="Entrez la taille du plateau : \n Veuillez entrer un nombre pair non nul !")
+    question = Label(taille_difficulte_window,text="Entrez la taille du plateau : \n Veuillez entrer un nombre entier pair non nul (maximum 14)!")
     entree = Entry(taille_difficulte_window)
     validation = Button(taille_difficulte_window,text="Valider",command = lambda : valide_taille_difficulte(entree,question,taille_difficulte_window))
     question.pack()
@@ -112,7 +116,7 @@ def valide_taille_difficulte(entree,question,taille_difficulte_window):
     global reponse,taille,difficulte,attente
     if entree.get().isdigit()==False:
         entree.delete(0,END)
-    elif reponse==0 and int(entree.get())%2==0 and int(entree.get())!=0:
+    elif reponse==0 and int(entree.get())%2==0 and int(entree.get())!=0 and int(entree.get())<16:
         reponse+=1
         question.config(text="Quel degré de difficulté choisissez vous ? \n 1 = facile \t 2 = moyen \t 3 = difficile")
         taille=int(entree.get())
@@ -171,7 +175,7 @@ def save_name():
     sauvegarder = Toplevel()
     sauvegarder.title("Sauvegarder")
     sauvegarder.resizable(width=False,height=False)
-    if grille == None:
+    if grille == []:
         no_grille = Label(sauvegarder,text="Il n\'y a pas de grille à sauvegarder !").pack()
         sauvegarder.after(5000,lambda : sauvegarder.destroy())
     else:
@@ -200,7 +204,7 @@ def load_save(name,load_window):
     save=open("./src/saves/{}".format(name),'r')
     donnees=save.readlines()
     save.close()
-    global grille,grille_depart,solution
+    global grille,grille_depart,solution,decalage
     grilles=[[],[],[]]
     for ligne in range(int(len(donnees[0])**(1/2))):
         grilles[0].append([])
@@ -219,6 +223,7 @@ def load_save(name,load_window):
                     corruption=Label(sauvegarde_corrompue,text="La sauvegarde est corrompue !").pack()
                     sauvegarde_corrompue.after(5000, lambda : [sauvegarde_corrompue.destroy(),load_window.destroy()])
                     return
+    decalage+=len(grille)**2
     grille,grille_depart,solution=grilles[0],grilles[1],grilles[2]
     afficher_grille(grille)
     load_window.destroy()
@@ -227,14 +232,15 @@ def load_save(name,load_window):
 
 # Fonction de reinitialisation de la grille
 def reinitialisation():
-    global grille,grille_depart
-    if grille==None:                            #Vérifie qu'une partie est en cours
+    global grille,grille_depart,decalage
+    if grille==[]:                            #Vérifie qu'une partie est en cours
         no_grille_window=Toplevel()
         no_grille_window.title("Pas de partie en cours")
         no_grille_window.resizable(width=False,height=False)
         no_grille_label=Label(no_grille_window,text="Il n\'y a pas de grille à réinitialiser !").pack()
         no_grille_window.after(5000, lambda : no_grille_window.destroy())
     else:
+        decalage+=len(grille)**2
         grille=liste_egal_liste_solution(grille_depart)
         afficher_grille(grille)
 
@@ -242,8 +248,9 @@ def reinitialisation():
 
 # Fonction de vérification de la grille
 
-def verification_tkinter(grille,solution):
-    if grille==None:                            #Vérifie qu'une partie est en cours
+def verification_tkinter():
+    global decalage,verification,grille,solution
+    if grille==[]:                            #Vérifie qu'une partie est en cours
         no_grille_window=Toplevel()
         no_grille_window.title("Pas de partie en cours")
         no_grille_window.resizable(width=False,height=False)
@@ -279,41 +286,47 @@ def verification_tkinter(grille,solution):
             Victoire_window.after(5000, lambda : Victoire_window.destroy())
 
         else:                                       #affiche les erreurs du joueurs
+            verification=True
             erreur_window=Toplevel()
             erreur_window.title("Affichage des erreurs")
             erreur_window.resizable(width=False,height=False)
-            erreur_notice=Label(erreur_window,text="En rouge s\'affiche les chiffres identiques côte à côte en nombre supérieur à 2. \n En bleu s\'affiche les lignes ou les colonnes qui sont identiques. \n En jaune sont encadrés les cases des lignes ou des colonnes qui possèdent trop de 1 ou trop de 0.").pack()
+            erreur_notice=Label(erreur_window,text="En rouge s\'affiche les chiffres identiques côte à côte en nombre supérieur à 2. \n En bleu s\'affiche les lignes ou les colonnes qui sont identiques. \n En jaune sont encadrés les cases des lignes ou des colonnes qui possèdent trop de 1 ou trop de 0. \n \n Appuyez sur fermer pour revenir au jeu.").pack()
             global global_frame,boutons,frames
 
             for erreur in range(1,liste_erreur.index("colonne")):
                 if liste_erreur[erreur][0] == "3 à la suite":
                     for case in [liste_erreur[erreur][3],liste_erreur[erreur][4],liste_erreur[erreur][5]]:
-                        bouton[lliste_erreur[erreur][2]*len(grille)+case].config(fg='#F14A27')
+                        boutons[liste_erreur[erreur][2]*len(grille)+case].config(fg='red')
 
                 if liste_erreur[erreur][0] == "identique":
                     for case in range(len(grille)):
-                        bouton[lliste_erreur[erreur][1]*len(grille)+case].config(bg='blue')
-                        bouton[lliste_erreur[erreur][2]*len(grille)+case].config(bg='blue')
+                        boutons[liste_erreur[erreur][1]*len(grille)+case].config(bg='blue')
+                        boutons[liste_erreur[erreur][2]*len(grille)+case].config(bg='blue')
 
                 if liste_erreur[erreur][0] == "trop de":
                     for case in range(len(grille)):
-                        frame[lliste_erreur[erreur][2]*len(grille)+case].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
+                        frames[liste_erreur[erreur][2]*len(grille)+case].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
 
             for erreur in range(liste_erreur.index("colonne"), len(liste_erreur)):
                 if liste_erreur[erreur][0] == "3 à la suite":
                     for ligne in [liste_erreur[erreur][3],liste_erreur[erreur][4],liste_erreur[erreur][5]]:
-                        bouton[ligne*len(grille)+liste_erreur[erreur][2]].config(fg='#F14A27')
+                        boutons[ligne*len(grille)+liste_erreur[erreur][2]].config(fg='red')
 
                 if liste_erreur[erreur][0] == "identique":
                     for ligne in range(len(grille)):
-                        bouton[ligne*len(grille)+liste_erreur[erreur][1]].config(bg='blue')
-                        bouton[ligne*len(grille)+liste_erreur[erreur][2]].config(bg='blue')
+                        boutons[ligne*len(grille)+liste_erreur[erreur][1]].config(bg='blue')
+                        boutons[ligne*len(grille)+liste_erreur[erreur][2]].config(bg='blue')
 
                 if liste_erreur[erreur][0] == "trop de":
                     for ligne in range(len(grille)):
-                        frame[ligne*len(grille)+liste_erreur[erreur][2]].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
+                        frames[ligne*len(grille)+liste_erreur[erreur][2]].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
 
-            fermer_erreur=Button(erreur_window, text='Fermer',command= lambda : [afficher_grille(grille), erreur_window.destroy()]).pack()
+            fermer_erreur=Button(erreur_window, text='Fermer',command= lambda : [afficher_grille(grille), erreur_window.destroy(),verification_statut()]).pack()
+
+def verification_statut():
+    global verification,decalage
+    verification=False
+    decalage+=len(grille)**2
 
 
 #----------------------- Setup de la fenêtre ------------------------------------
@@ -324,7 +337,7 @@ game_window.minsize(700,900)
 game_window.iconphoto(True, PhotoImage(file='./src/images/icon.png'))
 game_window.config(background='#41B77F')
 global_frame=Frame(game_window,bg='#41B77F',bd=3)
-grille,solution=None,1
+grille,solution,decalage,verification=[],None,0,False
 
 
 # ------------------------ Setup des menus ---------------------------------------
@@ -338,7 +351,7 @@ menu.add_cascade(label='fichier',menu=menu_fichier)
 menu_jeu=Menu(menu,tearoff=0)
 menu_jeu.add_command(label='règles du jeu',command = lambda : regle_du_jeu())
 menu_jeu.add_command(label='nouveau jeu',command= lambda : nouveau_jeu())
-menu_jeu.add_command(label='vérification de la grille',command= lambda : verification_tkinter(grille,solution))
+menu_jeu.add_command(label='vérification de la grille',command= lambda : verification_tkinter())
 menu_jeu.add_command(label='Réinitialiser la grille',command= lambda : reinitialisation())
 menu.add_cascade(label='jeu',menu=menu_jeu)
 
