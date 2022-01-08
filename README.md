@@ -21,7 +21,7 @@ Comme ce projet a été écrit en `Python`, il est nécessaire de disposer d'un 
 
 Télécharger la dernière version du projet sous la rubrique [releases](https://github.com/GatienVilain/Binairo/releases) ou cloner le dépôt github sur votre machine, en vous plaçant dans le répertoire où vous souhaitez le cloner et exécuter la commande suivante dans votre [invite de commande](https://lecrabeinfo.net/ouvrir-linvite-de-commandes-sur-windows.html) :
 ```PowerShell
-git clone https:/github.com/GatienVilain/Binairo.git
+git clone https://github.com/GatienVilain/Binairo.git
 ```
 
 ## Utilisation
