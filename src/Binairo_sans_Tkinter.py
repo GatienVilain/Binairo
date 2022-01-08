@@ -5,7 +5,7 @@
 #
 # Auteurs : Pierre Giraud, Nawress Laabidi, Gatien Vilain
 #
-# Date de création : 20 mai 2020
+# Date de création : 16 avril 2020
 #-----------------------------------------------------------------------
 
 
@@ -138,7 +138,7 @@ def changement_ligne_trop_0_ou_1(base): #si une ligne comporte trop de 0 ou de 1
     reponse=True
     for ligne in range(len(base)):
         if base[ligne].count(0)<base[ligne].count(1):
-            hasard=random.randint(0,int(len(base)*3/4)+1) #int(len(base)*3/4) correspond au rang le plus faible où peut se trouver le zero de rang le plus haut dans la ligne
+            hasard=random.randint(0,int(len(base)*3/4)) #int(len(base)*3/4) correspond au rang le plus faible où peut se trouver le zero de rang le plus haut dans la ligne
             base[ligne][base[ligne].index(1,hasard)]=0
             reponse=False
         if base[ligne].count(0)>base[ligne].count(1):
@@ -155,7 +155,7 @@ def inversion_ligne_colonne(liste_jeu,liste_erreur):
     for colonne in range(len(liste_jeu)):
         nouvelle_ligne=[]
         for ligne in range(len(liste_jeu)):
-            nouvelle_ligne.append(liste_jeu[ligne][colonne]) #nouvelle_ligne = ligne formée à partir de la colonne de la grille précédente
+            nouvelle_ligne.append(liste_jeu[len(liste_jeu)-1-ligne][colonne]) #nouvelle_ligne = ligne formée à partir de la colonne de la grille précédente
         base.append(nouvelle_ligne)
     liste_jeu=base
     return liste_jeu

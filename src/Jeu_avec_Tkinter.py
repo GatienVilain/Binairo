@@ -21,21 +21,27 @@ from Affichage_regle_du_jeu import regle_du_jeu
 # Fonction d'affichage de la grille de jeu
 def afficher_grille(grille):
     police=int(250/len(grille))         #calcule la police optimale d'affichage de la grille
-    global global_frame
+    global global_frame,frames,boutons
     for widget in global_frame.winfo_children():
         widget.destroy()
+    frames,boutons=[],[]
     for ligne in range(len(grille)):
         for valeur in range(len(grille)):
             globals()["frame_" + str(ligne) + str(valeur)]=Frame(global_frame,bg='#41B77F',bd=1,relief=SUNKEN,highlightbackground="#41B77F", highlightcolor="#41B77F", highlightthickness=4)
-            globals()["button_" + str(ligne) + str(valeur)]=Button(globals()["frame_" + str(ligne) + str(valeur)],text=grille[ligne][valeur],font=("Arial",police),bg='#41B77F',fg='white',width=2,height=1,)
+            frames.append(globals()["frame_" + str(ligne) + str(valeur)])
 
-            globals()["button_" + str(ligne) + str(valeur)].config(command= lambda x='button_'+str(ligne)+str(valeur): changer_valeur(x))
+            globals()["button_" + str(ligne) + str(valeur)]=Button(frames[ligne*len(grille)+valeur],text=grille[ligne][valeur],font=("Arial",police),bg='#41B77F',fg='white',width=2,height=1)
+            boutons.append(globals()["button_" + str(ligne) + str(valeur)])
+            if grille_depart[ligne][valeur]!=' ':
+                boutons[ligne*len(grille)+valeur].config(fg=('black'))
 
-            globals()["frame_" + str(ligne) + str(valeur)].grid(row=ligne,column=valeur,sticky=W)
-            globals()["frame_" + str(ligne) + str(valeur)].columnconfigure(0,weight=4)
-            globals()["frame_" + str(ligne) + str(valeur)].rowconfigure(0,weight=4)
+            boutons[ligne*len(grille)+valeur].config(command= lambda x=boutons[ligne*len(grille)+valeur]: changer_valeur(x))
 
-            globals()["button_" + str(ligne) + str(valeur)].grid(row=0,column=0)
+            frames[ligne*len(grille)+valeur].grid(row=ligne,column=valeur,sticky=W)
+            frames[ligne*len(grille)+valeur].columnconfigure(0,weight=4)
+            frames[ligne*len(grille)+valeur].rowconfigure(0,weight=4)
+
+            boutons[(ligne)*len(grille)+valeur].grid(row=0,column=0)
     global_frame.pack(expand = YES)
     # ---------------------
     # Création d'un bouton réinitialiser
@@ -47,10 +53,16 @@ def afficher_grille(grille):
     # ------------------------
 
 # Fonction qui change les valeurs quand on clique dessus
-def changer_valeur(boutton):
+def changer_valeur(bouton):
     global grille_depart,grille
-    ligne=int(boutton[7])
-    colonne=int(boutton[8])
+    numero=""
+    for i in range(14,str(bouton).index(".",14)):
+        numero+=str(bouton)[i]
+    if numero=="":
+        numero=1
+    numero=int(numero)-int((int(numero)-1)/len(grille)**2)*len(grille)**2-1
+    ligne=int((numero/len(grille)))
+    colonne=numero-ligne*len(grille)
     if grille_depart[ligne][colonne]!=' ':
         erreur=Toplevel()
         erreur.resizable(width=False,height=False)
@@ -59,13 +71,13 @@ def changer_valeur(boutton):
         erreur.after(5000,lambda : erreur.destroy())
     elif grille[ligne][colonne]==0:       #change un 0 en 1
         grille[ligne][colonne]=1
-        globals()[boutton].config(text=1)
+        bouton.config(text=1)
     elif grille[ligne][colonne]==1:     #change un 1 en "blanc"
         grille[ligne][colonne]=' '
-        globals()[boutton].config(text='')
+        bouton.config(text='')
     elif grille[ligne][colonne]==' ':    #change un "blanc" en 0
         grille[ligne][colonne]=0
-        globals()[boutton].config(text='0')
+        bouton.config(text='0')
 
 #------------- Fonctions gérant la demande d'une nouvelle partie --------------------
 
@@ -182,8 +194,7 @@ def load():
         numero_save=0
         for name in saves:
             numero_save+=1
-            globals()["save_" + str(name)]=Button(load_window,text=name,command = lambda x=name: load_save(x,load_window))
-            globals()["save_" + str(name)].grid(row=numero_save,column=0)
+            Button(load_window,text=name,command = lambda x=name: load_save(x,load_window)).grid(row=numero_save,column=0)
 
 def load_save(name,load_window):
     save=open("./src/saves/{}".format(name),'r')
@@ -272,35 +283,35 @@ def verification_tkinter(grille,solution):
             erreur_window.title("Affichage des erreurs")
             erreur_window.resizable(width=False,height=False)
             erreur_notice=Label(erreur_window,text="En rouge s\'affiche les chiffres identiques côte à côte en nombre supérieur à 2. \n En bleu s\'affiche les lignes ou les colonnes qui sont identiques. \n En jaune sont encadrés les cases des lignes ou des colonnes qui possèdent trop de 1 ou trop de 0.").pack()
-            global global_frame
+            global global_frame,boutons,frames
 
             for erreur in range(1,liste_erreur.index("colonne")):
                 if liste_erreur[erreur][0] == "3 à la suite":
                     for case in [liste_erreur[erreur][3],liste_erreur[erreur][4],liste_erreur[erreur][5]]:
-                        globals()["button_" + str(liste_erreur[erreur][2]) + str(case)].config(fg='#F14A27')
+                        bouton[lliste_erreur[erreur][2]*len(grille)+case].config(fg='#F14A27')
 
                 if liste_erreur[erreur][0] == "identique":
                     for case in range(len(grille)):
-                        globals()["button_" + str(liste_erreur[erreur][1]) + str(case)].config(bg='blue')
-                        globals()["button_" + str(liste_erreur[erreur][2]) + str(case)].config(bg='blue')
+                        bouton[lliste_erreur[erreur][1]*len(grille)+case].config(bg='blue')
+                        bouton[lliste_erreur[erreur][2]*len(grille)+case].config(bg='blue')
 
                 if liste_erreur[erreur][0] == "trop de":
                     for case in range(len(grille)):
-                        globals()["frame_" + str(liste_erreur[erreur][2]) + str(case)].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
+                        frame[lliste_erreur[erreur][2]*len(grille)+case].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
 
             for erreur in range(liste_erreur.index("colonne"), len(liste_erreur)):
                 if liste_erreur[erreur][0] == "3 à la suite":
-                    for case in [liste_erreur[erreur][3],liste_erreur[erreur][4],liste_erreur[erreur][5]]:
-                        globals()["button_" + str(len(grille) - case - 1) + str(liste_erreur[erreur][2])].config(fg='#F14A27')
+                    for ligne in [liste_erreur[erreur][3],liste_erreur[erreur][4],liste_erreur[erreur][5]]:
+                        bouton[ligne*len(grille)+liste_erreur[erreur][2]].config(fg='#F14A27')
 
                 if liste_erreur[erreur][0] == "identique":
-                    for case in range(len(grille)):
-                        globals()["button_" + str(case) + str(liste_erreur[erreur][1])].config(bg='blue')
-                        globals()["button_" + str(case) + str(liste_erreur[erreur][2])].config(bg='blue')
+                    for ligne in range(len(grille)):
+                        bouton[ligne*len(grille)+liste_erreur[erreur][1]].config(bg='blue')
+                        bouton[ligne*len(grille)+liste_erreur[erreur][2]].config(bg='blue')
 
                 if liste_erreur[erreur][0] == "trop de":
-                    for case in range(len(grille)):
-                        globals()["frame_" + str(case) + str(liste_erreur[erreur][2])].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
+                    for ligne in range(len(grille)):
+                        frame[ligne*len(grille)+liste_erreur[erreur][2]].config(highlightbackground="yellow", highlightcolor="yellow", highlightthickness=4)
 
             fermer_erreur=Button(erreur_window, text='Fermer',command= lambda : [afficher_grille(grille), erreur_window.destroy()]).pack()
 
@@ -313,7 +324,7 @@ game_window.minsize(700,900)
 game_window.iconphoto(True, PhotoImage(file='./src/images/icon.png'))
 game_window.config(background='#41B77F')
 global_frame=Frame(game_window,bg='#41B77F',bd=3)
-grille,solution=None,[0,1]
+grille,solution=None,1
 
 
 # ------------------------ Setup des menus ---------------------------------------
