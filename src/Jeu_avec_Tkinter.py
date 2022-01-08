@@ -21,7 +21,7 @@ from Affichage_regle_du_jeu import regle_du_jeu
 # Fonction d'affichage de la grille de jeu
 def afficher_grille(grille):
     police=int(250/len(grille))         #calcule la police optimale d'affichage de la grille
-    global global_frame,frames,boutons
+    global global_frame,frames,boutons,menu_frame
     for widget in global_frame.winfo_children():
         widget.destroy()
     frames,boutons=[],[]
@@ -37,13 +37,17 @@ def afficher_grille(grille):
 
             boutons[ligne*len(grille)+valeur].config(command= lambda x=boutons[ligne*len(grille)+valeur]: changer_valeur(x))
 
-            frames[ligne*len(grille)+valeur].grid(row=ligne,column=valeur,sticky=W)
+            frames[ligne*len(grille)+valeur].grid(row=ligne+1,column=valeur,sticky=W)
             frames[ligne*len(grille)+valeur].columnconfigure(0,weight=4)
             frames[ligne*len(grille)+valeur].rowconfigure(0,weight=4)
 
             boutons[(ligne)*len(grille)+valeur].grid(row=0,column=0)
+    menu_frame.pack_forget()
     global_frame.pack(expand = YES)
     # ---------------------
+    # Création d'un bouton menu principal
+    btn_menu_principal = Button(global_frame, text = 'menu principal', font = ('Helvetica', 12), bg ='blue', fg = 'white', overrelief = SUNKEN,command= lambda : [menu_frame.pack(expand = YES),global_frame.pack_forget()])
+    btn_menu_principal.grid(row = 0, column = 0, columnspan = len(grille), pady = 10)
     # Création d'un bouton réinitialiser
     btn_reinitialiser = Button(global_frame, text = 'Réinitialiser', font = ('Helvetica', 12), bg ='blue', fg = 'white', overrelief = SUNKEN, command= lambda : reinitialisation())
     btn_reinitialiser.grid(row = len(grille)+1, column = 0, columnspan = (len(grille))//2, sticky = W, pady = 10)
@@ -249,7 +253,7 @@ def reinitialisation():
 # Fonction de vérification de la grille
 
 def verification_tkinter():
-    global decalage,verification,grille,solution
+    global decalage,verification,grille,solution,global_frame,menu_frame,game_window
     if grille==[]:                            #Vérifie qu'une partie est en cours
         no_grille_window=Toplevel()
         no_grille_window.title("Pas de partie en cours")
@@ -263,6 +267,7 @@ def verification_tkinter():
         Victoire_window.resizable(width=False,height=False)
         Victoire_label=Label(Victoire_window,text="Bien joué, vous avez gagné !").pack()
         Victoire_window.after(5000, lambda : Victoire_window.destroy())
+        game_window.after(3000, lambda : [global_frame.pack_forget(),menu_frame.pack(expand = YES)])
 
     elif verification_complet(grille):       #vérifie si le joueur a bien rempli entièrement la grille
         grille_incomplete=Toplevel()
@@ -284,6 +289,7 @@ def verification_tkinter():
             Victoire_window.resizable(width=False,height=False)
             Victoire_label=Label(Victoire_window,text="Bien joué, vous avez gagné !").pack()
             Victoire_window.after(5000, lambda : Victoire_window.destroy())
+            game_window.after(3000, lambda : [global_frame.pack_forget(),menu_frame.pack(expand = YES)])
 
         else:                                       #affiche les erreurs du joueurs
             verification=True
@@ -291,7 +297,7 @@ def verification_tkinter():
             erreur_window.title("Affichage des erreurs")
             erreur_window.resizable(width=False,height=False)
             erreur_notice=Label(erreur_window,text="En rouge s\'affiche les chiffres identiques côte à côte en nombre supérieur à 2. \n En bleu s\'affiche les lignes ou les colonnes qui sont identiques. \n En jaune sont encadrés les cases des lignes ou des colonnes qui possèdent trop de 1 ou trop de 0. \n \n Appuyez sur fermer pour revenir au jeu.").pack()
-            global global_frame,boutons,frames
+            global boutons,frames
 
             for erreur in range(1,liste_erreur.index("colonne")):
                 if liste_erreur[erreur][0] == "3 à la suite":
@@ -328,16 +334,37 @@ def verification_statut():
     verification=False
     decalage+=len(grille)**2
 
-
 #----------------------- Setup de la fenêtre ------------------------------------
 game_window=Tk()
 game_window.title("BINAIRO")
 game_window.geometry("800x1000")
-game_window.minsize(700,900)
+game_window.minsize(700,1000)
 game_window.iconphoto(True, PhotoImage(file='./src/images/icon.png'))
+color = '#41B77F'
 game_window.config(background='#41B77F')
 global_frame=Frame(game_window,bg='#41B77F',bd=3)
+menu_principale = 0
 grille,solution,decalage,verification=[],None,0,False
+
+#------------------------------- Menu ------------------------------------------
+# Frame principale
+menu_frame = Frame(game_window, bg = '#41B77F', bd = 3)
+menu_frame.pack(expand = YES)
+
+# Création de l'image d'exemple de la règle sélectionnée
+img_menu = PhotoImage(file = './src/images/logo.png')
+lbl_logo = Label(menu_frame, image = img_menu, bg = color)
+lbl_logo.image = img_menu
+lbl_logo.pack(fill = X, pady = 40)
+# Menu principale
+btn_nouveau_jeu = Button(menu_frame, text = 'Nouveau jeu', font = ('Helvetica', 12), bg ='#0587DE',activebackground = color, fg = 'white', overrelief = SUNKEN,command= lambda : [nouveau_jeu(), menu_frame.pack_forget()])
+btn_nouveau_jeu.pack(fill = X, pady = 20)
+btn_charger = Button(menu_frame, text = 'Charger une partie', font = ('Helvetica', 12), bg ='#0587DE',activebackground = color, fg = 'white', overrelief = SUNKEN,command = lambda : load())
+btn_charger.pack(fill = X, pady = 20)
+btn_regles_du_jeu = Button(menu_frame, text = 'Règles du jeu', font = ('Helvetica', 12), bg ='#0587DE',activebackground = color, fg = 'white', overrelief = SUNKEN,command = lambda : regle_du_jeu())
+btn_regles_du_jeu.pack(fill = X, pady = 20)
+btn_quitter = Button(menu_frame, text = 'Quitter le jeu', font = ('Helvetica', 12), bg ='#0587DE',activebackground = color, fg = 'white', overrelief = SUNKEN,command= lambda : game_window.destroy())
+btn_quitter.pack(fill = X, pady = 20)
 
 
 # ------------------------ Setup des menus ---------------------------------------
@@ -356,6 +383,7 @@ menu_jeu.add_command(label='Réinitialiser la grille',command= lambda : reinitia
 menu.add_cascade(label='jeu',menu=menu_jeu)
 
 menu_quitter=Menu(menu,tearoff=0)
+menu_quitter.add_command(label='Menu principal',command= lambda : [menu_frame.pack(expand = YES),global_frame.pack_forget()])
 menu_quitter.add_command(label='quitter le jeu',command= lambda : game_window.destroy())
 menu.add_cascade(label='quitter',menu=menu_quitter)
 
