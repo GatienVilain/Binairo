@@ -19,7 +19,7 @@ Comme ce projet a été écrit en `Python`, il est nécessaire de disposer d'un 
 
 ## Installation
 
-Télécharger la dernière version du projet sous la rubrique [releases](https://github.com/GatienVilain/Binairo-Tkinter/releases) ou cloner le dépôt github sur votre machine, en vous plaçant dans le répertoire où vous souhaitez le cloner et exécuter la commande suivante dans votre [invite de commande](https://lecrabeinfo.net/ouvrir-linvite-de-commandes-sur-windows.html) :
+Télécharger la dernière version du projet sous la rubrique [releases](https://github.com/GatienVilain/Binairo/releases) ou cloner le dépôt github sur votre machine, en vous plaçant dans le répertoire où vous souhaitez le cloner et exécuter la commande suivante dans votre [invite de commande](https://lecrabeinfo.net/ouvrir-linvite-de-commandes-sur-windows.html) :
 ```PowerShell
 git clone https:/github.com/GatienVilain/Binairo.git
 ```
@@ -33,7 +33,7 @@ Python .\src\Jeu_avec_Tkinter.py
 
 ## Problèmes ?
 
-Si vous rencontrez des problèmes à l'utilisation, veuillez ouvrir un billet sous la rubrique [issues](https:/github.com/GatienVilain/Binairo/issues).
+Si vous rencontrez des problèmes à l'utilisation, veuillez ouvrir un billet sous la rubrique [issues](https://github.com/GatienVilain/Binairo/issues).
 Bien que ce projet ne soit plus actif, nous essayerons d'y jeter un coup d'oeil.
 
 ## Auteurs
