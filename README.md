@@ -7,6 +7,8 @@
 
 Dans le cadre du projet de fin d'année de première année d'école préparatoire à **Junia ISEN Lille**, il nous a été demandé de programmer un [Binero](https://www.educmat.fr/categories/jeux_reflexion/fiches_jeux/binero/index.php ) comprenant une interface graphique ([TkInter](https://docs.python.org/3/library/tkinter.html))
 
+![Fenêtre du jeu de Binairo](https://github.com/GatienVilain/GatienVilain.github.io/blob/main/images/Binairo.jpg)
+
 ## Fonctionnalités
 
 * Difficultés adaptatives
