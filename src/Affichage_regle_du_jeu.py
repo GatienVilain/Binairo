@@ -93,7 +93,7 @@ def regle_du_jeu():
 
     # Création de la fenêtre d'exemple
     # Création de l'image d'exemple de la règle sélectionnée
-    img_exemple = PhotoImage(file = './src/images/lignes_identique.png')
+    img_exemple = PhotoImage(file = './images/lignes_identique.png')
     grille_exemple = Label(boite_exemple, image = img_exemple, bg = color)
     grille_exemple.image = img_exemple
     grille_exemple.grid(row = 0, column = 1, padx = 20)
@@ -136,25 +136,25 @@ def regle_du_jeu():
             boite_exemple.grid(row = 1, column = 0, sticky="ew")
             # règle 1 : On ne peut compléter les cases qu'avec des 0 ou des 1.
             if page == 1: 
-                img_exemple.config(file = './src/images/grille_remplie.png')
+                img_exemple.config(file = './images/grille_remplie.png')
                 txt_exemple.config(text = 'On ne peut compléter les  \n cases de la grille qu\'avec \n des 0 ou des 1')
                 btn_precedent.config(command = lambda : changement_de_page(0))
                 btn_suivant.config(command = lambda : changement_de_page(2))
             # règle 2 : Autant de 1 et de 0 sur chaque ligne et sur chaque colonne.
             elif page == 2: 
-                img_exemple.config(file = './src/images/autant_éléments.png')
+                img_exemple.config(file = './images/autant_éléments.png')
                 txt_exemple.config(text = 'Il doit y avoir autant de 1 \n et de 0 sur chaque ligne et\n sur chaque colonne')
                 btn_precedent.config(command = lambda : changement_de_page(1))
                 btn_suivant.config(command = lambda : changement_de_page(3))
             # règle 3 : Pas plus de 2 chiffres identiques côte à côte.
             elif page == 3:
-                img_exemple.config(file = './src/images/trop_éléments.png')
+                img_exemple.config(file = './images/trop_éléments.png')
                 txt_exemple.config(text = 'On ne peut pas avoir plus \n  de 2 chiffres identiques  \n côte à côte')
                 btn_precedent.config(command = lambda : changement_de_page(2))
                 btn_suivant.config(command = lambda : changement_de_page(4))
             # règle 4 : 2 lignes ou 2 colonnes ne peuvent être identique.
             elif page == 4:
-                img_exemple.config(file = './src/images/lignes_identique.png')
+                img_exemple.config(file = './images/lignes_identique.png')
                 txt_exemple.config(text = '2 lignes ou 2 colonnes \n ne peuvent être identiques')
                 btn_precedent.config(command = lambda : changement_de_page(3))
                 btn_suivant.config(command = lambda : changement_de_page(0))

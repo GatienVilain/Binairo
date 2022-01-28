@@ -137,7 +137,7 @@ def valide_taille_difficulte(entree,question,taille_difficulte_window):
 
 # Fonction de sauvegarde de la partie
 def save(entree,grille,grille_depart,solution,sauvegarder):
-    chemin="./src/saves/{}".format(entree.get())
+    chemin="./saves/{}".format(entree.get())
     if path.isfile(chemin):
         sauvegarde_existe=Toplevel()
         oui_non=IntVar()
@@ -190,7 +190,7 @@ def save_name():
 
 # Fonction de chargement de la partie
 def load():
-    saves=[name for name in listdir("./src/saves") if path.isfile("./src/saves/{}".format(name))]
+    saves=[name for name in listdir("./saves") if path.isfile("./saves/{}".format(name))]
     load_window=Toplevel()
     load_window.title("charger une partie")
     load_window.resizable(width=False,height=False)
@@ -205,7 +205,7 @@ def load():
             Button(load_window,text=name,command = lambda x=name: load_save(x,load_window)).grid(row=numero_save,column=0)
 
 def load_save(name,load_window):
-    save=open("./src/saves/{}".format(name),'r')
+    save=open("./saves/{}".format(name),'r')
     donnees=save.readlines()
     save.close()
     global grille,grille_depart,solution,decalage
@@ -339,7 +339,7 @@ game_window=Tk()
 game_window.title("BINAIRO")
 game_window.geometry("800x1000")
 game_window.minsize(700,1000)
-game_window.iconphoto(True, PhotoImage(file='./src/images/icon.png'))
+game_window.iconphoto(True, PhotoImage(file='./images/icon.png'))
 color = '#41B77F'
 game_window.config(background='#41B77F')
 global_frame=Frame(game_window,bg='#41B77F',bd=3)
@@ -352,7 +352,7 @@ menu_frame = Frame(game_window, bg = '#41B77F', bd = 3)
 menu_frame.pack(expand = YES)
 
 # Création de l'image d'exemple de la règle sélectionnée
-img_menu = PhotoImage(file = './src/images/logo.png')
+img_menu = PhotoImage(file = './images/logo.png')
 lbl_logo = Label(menu_frame, image = img_menu, bg = color)
 lbl_logo.image = img_menu
 lbl_logo.pack(fill = X, pady = 40)
