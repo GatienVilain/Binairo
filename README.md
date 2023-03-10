@@ -2,6 +2,7 @@
 [license-image]: https://img.shields.io/badge/license-MPL%20v2.0-blue.svg
 [releases-url]: https://github.com/GatienVilain/Binairo/releases "Ouvre la page des versions du projet"
 [issues-url]: https://github.com/GatienVilain/Binairo/issues "Ouvre la page des problèmes rencontrés"
+[auteur-pierre-url]: https://github.com/Giraud-Pierre "Ouvre la page GitHub de Pierre Giraud"
 [auteur-gatien-url]: https://github.com/GatienVilain "Ouvre la page GitHub de Gatien Vilain"
 
 [presentation-binairo-url]: https://www.educmat.fr/categories/jeux_reflexion/fiches_jeux/binero/index.php "Ouvre la page qui présente le jeu Binairo sur le site Educmat"
@@ -50,4 +51,4 @@ Bien que ce projet ne soit plus actif, nous essayerons d'y jeter un coup d'oeil.
 
 ## Auteurs
 
-Le projet a été réalisé par Pierre GIRAUD, Nawress LAABIDI et [Gatien VILAIN][auteur-gatien-url]
+Le projet a été réalisé par [Pierre GIRAUD][auteur-pierre-url], Nawress LAABIDI et [Gatien VILAIN][auteur-gatien-url]
